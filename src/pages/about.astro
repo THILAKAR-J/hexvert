@@ -1,0 +1,16 @@
+---
+import Plain from '../layouts/Plain.astro';
+import { SITE } from '../data/site';
+---
+
+<Plain title="About Hexvert and How to Contact Us - Hexvert" description="Hexvert is a free, private color converter for designers and developers. Learn what it does, how it stays accurate, and how to reach us." path="/about" h1="About Hexvert">
+  <p class="muted">Hexvert converts colors between HEX, RGB, HSL, HWB, OKLCH, OKLab, Display P3 and CMYK. It is built for people who move colors between design tools and code every day, including teams moving to Tailwind CSS v4 and OKLCH.</p>
+  <h2 class="h3">What we care about</h2>
+  <ul class="muted">
+    <li>Correct numbers, checked on every release. See <a href="/accuracy">how we test accuracy</a>.</li>
+    <li>Privacy. Conversion happens in your browser and nothing you type is sent to us.</li>
+    <li>Speed. Pages are plain HTML with one small script, so the tool is ready as soon as the page appears.</li>
+  </ul>
+  <h2 class="h3">Contact</h2>
+  <p class="muted">Found a wrong value, or want a format we do not support yet? Email <a href={`mailto:${SITE.email}`}>{SITE.email}</a>. Bug reports and suggestions are also welcome on <a href={SITE.repo} rel="noopener">GitHub</a>.</p>
+</Plain>

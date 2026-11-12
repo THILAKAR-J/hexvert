@@ -1,0 +1,14 @@
+---
+import { PAIRS, pairLabel } from '../data/pairs';
+interface Props { current?: string; heading?: string }
+const { current, heading = 'Go straight to one conversion' } = Astro.props;
+const pairs = PAIRS.filter((p) => p.slug !== current);
+---
+
+<section id="conversions" class="split" style="align-items:flex-start">
+  <h2 class="h2 split-text">{heading}</h2>
+  <ul class="linklist split-body">
+    {pairs.map((p) => <li><a href={`/${p.slug}`}>{pairLabel(p)}</a></li>)}
+    <li><a href="/bulk">A whole file at once</a></li>
+  </ul>
+</section>

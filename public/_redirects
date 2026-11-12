@@ -1,0 +1,11 @@
+# Cloudflare Pages redirects. https://developers.cloudflare.com/pages/configuration/redirects/
+# Common alternative spellings of the conversion pages.
+/hex-rgb        /hex-to-rgb    301
+/rgb-hex        /rgb-to-hex    301
+/hex-hsl        /hex-to-hsl    301
+/hsl-hex        /hsl-to-hex    301
+/hex-oklch      /hex-to-oklch  301
+/oklch-hex      /oklch-to-hex  301
+/rgb-hsl        /rgb-to-hsl    301
+/rgb-cmyk       /rgb-to-cmyk   301
+/index          /              301

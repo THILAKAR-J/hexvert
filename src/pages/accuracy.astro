@@ -1,0 +1,36 @@
+---
+import Plain from '../layouts/Plain.astro';
+import { SITE } from '../data/site';
+---
+
+<Plain
+  title="How Hexvert Tests Color Conversion Accuracy - Hexvert"
+  description="Every release checks Hexvert against the Culori reference library on 5,012 colors, tests exact round trips and gamut mapping, and verifies quoted values."
+  path="/accuracy"
+  h1="How we test accuracy"
+>
+  <p class="muted">A color converter is only useful if you can trust the numbers. These checks run automatically before every release; if any fails, the site is not published.</p>
+
+  <h2 class="h3">Checked against a reference library</h2>
+  <p class="muted">We compare our results with <a href="https://culorijs.org/" rel="noopener">Culori</a>, a widely used open-source color library, on 5,012 colors: 5,000 chosen at random with a fixed seed plus the corners and greys where conversions usually break.</p>
+  <ul class="muted">
+    <li>OKLCH and OKLab: lightness within 0.000001, chroma and the a and b axes within 0.001, hue within 0.01°.</li>
+    <li>Display P3: each channel within 0.0001.</li>
+    <li>HSL and HWB: within 0.05 of a percentage point or degree, which is the rounding we display.</li>
+    <li>All 148 CSS color names give the same HEX code as the reference.</li>
+  </ul>
+
+  <h2 class="h3">Exact round trips</h2>
+  <p class="muted">Every RGB, HSL, HWB, OKLCH, OKLab and Display P3 value we show is converted back and must return the exact HEX code it came from, for all 5,012 colors. That is why OKLCH chroma has five decimal places: in a one-off test of 300,000 colors, four decimal places left hundreds that did not come back exactly. Transparency must survive every round trip too.</p>
+
+  <h2 class="h3">Colors outside sRGB</h2>
+  <p class="muted">When an OKLCH or Display P3 color is too vivid for HEX, we reduce its chroma while keeping lightness and hue, as the CSS Color 4 specification describes. On 2,000 random out-of-range colors, more than 95% match Culori exactly and none differ by more than two steps out of 255 in any channel. The small differences come from where each search stops. Mapped colors are always labelled on the page.</p>
+
+  <h2 class="h3">Every number on the site</h2>
+  <p class="muted">Each conversion page quotes worked examples. Those values are stored next to the conversion they claim, and the build fails if the converter gives anything different.</p>
+
+  <h2 class="h3">What we do not claim</h2>
+  <p class="muted">CMYK uses the standard formula with no print profile, so treat it as an estimate. Pantone and other proprietary color systems are not supported.</p>
+
+  <p class="muted">The tests are in the <a href={SITE.repo} rel="noopener">public source code</a>. If you find a wrong value, email <a href={`mailto:${SITE.email}`}>{SITE.email}</a> with the color you typed.</p>
+</Plain>

@@ -1,0 +1,30 @@
+---
+import { SITE } from '../data/site';
+---
+
+<footer class="site-footer">
+  <div class="wrap footer-grid">
+    <div class="footer-about">
+      <span class="footer-brand">hexvert</span>
+      <span>Everything runs in your browser. Nothing is uploaded.</span>
+    </div>
+    <nav class="footer-col" aria-label="Tools">
+      <strong>Tools</strong>
+      <a href="/">Color converter</a>
+      <a href="/bulk">Bulk converter</a>
+      <a href="/hex-to-oklch">HEX to OKLCH</a>
+      <a href="/#contrast">Contrast check</a>
+    </nav>
+    <nav class="footer-col" aria-label="About">
+      <strong>About</strong>
+      <a href="/accuracy">How we test accuracy</a>
+      <a href="/about">About and contact</a>
+      <a href={SITE.repo} rel="noopener">Source code</a>
+    </nav>
+    <nav class="footer-col" aria-label="Legal">
+      <strong>Legal</strong>
+      <a href="/privacy">Privacy</a>
+      <a href="/terms">Terms</a>
+    </nav>
+  </div>
+</footer>

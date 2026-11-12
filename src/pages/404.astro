@@ -1,0 +1,12 @@
+---
+import Plain from '../layouts/Plain.astro';
+import { PAIRS, pairLabel } from '../data/pairs';
+---
+
+<Plain title="Page Not Found - Hexvert" description="This page does not exist. Use the color converter or pick a conversion from the list." path="/404" h1="That page is not here" noindex breadcrumb={false}>
+  <p class="muted">The link may be old or mistyped. The <a href="/">color converter</a> accepts any format, or pick a conversion:</p>
+  <ul class="muted">
+    {PAIRS.map((p) => <li><a href={`/${p.slug}`}>{pairLabel(p)}</a></li>)}
+    <li><a href="/bulk">Convert a whole file</a></li>
+  </ul>
+</Plain>

@@ -1,0 +1,76 @@
+---
+import Base from '../layouts/Base.astro';
+import Hero from '../components/Hero.astro';
+import FormatsCard from '../components/FormatsCard.astro';
+import Contrast from '../components/Contrast.astro';
+import CodeBoxes from '../components/CodeBoxes.astro';
+import Conversions from '../components/Conversions.astro';
+import Faq from '../components/Faq.astro';
+import { HOME_FAQ } from '../data/home';
+import { SITE } from '../data/site';
+import { convert } from '../lib/color';
+import { swatchStyle } from '../lib/ui';
+
+const initial = SITE.defaultColor;
+const title = 'Color Converter: HEX, RGB, HSL, OKLCH, CMYK - Hexvert';
+const description =
+  'Convert any color between HEX, RGB, HSL, OKLCH, Display P3 and CMYK. Free and private, with a contrast check and ready CSS and Tailwind v4 code.';
+const bulkExample = convert('#1E293B')!.oklch;
+const jsonLd = [
+  { '@context': 'https://schema.org', '@type': 'WebSite', name: SITE.name, url: SITE.url + '/' },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebApplication',
+    name: 'Hexvert Color Converter',
+    url: SITE.url + '/',
+    description,
+    applicationCategory: 'DesignApplication',
+    operatingSystem: 'Any',
+    isAccessibleForFree: true,
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+  },
+];
+---
+
+<Base title={title} description={description} path="/" jsonLd={jsonLd} bodyStyle={swatchStyle(convert(initial)!)}>
+  <Hero h1="Color converter" label="Type or paste any color: HEX, RGB, HSL or OKLCH" initial={initial} home />
+
+  <main id="main" class="wrap stack pull-up">
+    <FormatsCard initial={initial} heading="The same color, eight ways" />
+    <Contrast initial={initial} />
+    <CodeBoxes initial={initial} />
+
+    <section id="more" class="section">
+      <h2 class="h2">More than one color?</h2>
+      <div class="grid-2">
+        <a class="linkcard is-dark" href="/bulk">
+          <span class="linkcard-title">Convert a whole file</span>
+          <span class="linkcard-text">Paste a stylesheet or a token file. Every color changes format; everything else stays as it was.</span>
+          <span class="linkcard-code">#1E293B → {bulkExample}</span>
+          <span class="linkcard-cta">Open the bulk converter</span>
+        </a>
+        <a class="linkcard" href="/hex-to-oklch">
+          <span class="linkcard-title">Moving to Tailwind v4?</span>
+          <span class="linkcard-text">Tailwind v4 defines its palette in OKLCH. Convert your brand HEX colors and copy a ready @theme line.</span>
+          <span class="linkcard-code">--color-brand-500: oklch(…)</span>
+          <span class="linkcard-cta">HEX to OKLCH for Tailwind v4</span>
+        </a>
+      </div>
+    </section>
+
+    <Conversions />
+
+    <section id="how" class="prose">
+      <h2 class="h2">What the formats mean</h2>
+      <h3 class="h3">HEX and RGB say the same thing</h3>
+      <p class="muted">A HEX code is red, green and blue written in base 16. In <code>#3B82F6</code>, 3B is 59, 82 is 130 and F6 is 246. That is why converting between them never changes the color.</p>
+      <h3 class="h3">OKLCH matches how we see</h3>
+      <p class="muted">Its three numbers are lightness, chroma (colorfulness) and hue. Two colors with the same lightness look equally light, which HSL cannot promise. OKLCH also reaches colors that only newer screens can show; when you ask for one, the page tells you and shows the closest match.</p>
+      <h3 class="h3">CMYK is a starting point</h3>
+      <p class="muted">Print depends on ink, paper and the press. The CMYK value here uses the standard formula with no print profile, so check a proof before you print.</p>
+      <p class="muted">Want to know how we check the numbers? <a href="/accuracy">Read how accuracy is tested</a>.</p>
+    </section>
+
+    <Faq items={HOME_FAQ} />
+  </main>
+</Base>

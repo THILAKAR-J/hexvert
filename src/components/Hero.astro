@@ -1,0 +1,80 @@
+---
+import Header from './Header.astro';
+import { PRESETS } from '../data/formats';
+import { convert, type FormatKey } from '../lib/color';
+
+interface Props {
+  h1: string;
+  label: string;
+  /** The color shown before the visitor types anything */
+  initial: string;
+  /** On conversion pages: the one format to show large under the input */
+  result?: { key: FormatKey; label: string };
+  home?: boolean;
+}
+
+const { h1, label, initial, result, home = false } = Astro.props;
+const start = convert(initial);
+if (!start) throw new Error(`Hero: "${initial}" is not a color`);
+const presets = PRESETS.map((p) => ({ ...p, dot: convert(p.value)!.solidHex }));
+---
+
+<div class="hero">
+  <Header home={home} />
+  <section id="tool" class="wrap hero-body" data-converter data-default={initial} data-persist={home ? 'true' : 'false'}>
+    <h1>{h1}</h1>
+    <label class="hero-label" for="color-input">{label}</label>
+    <div class="hero-input-row">
+      <input
+        id="color-input"
+        class:list={['hero-input', { 'is-long': initial.length > 12 }]}
+        type="text"
+        value={initial}
+        spellcheck="false"
+        autocomplete="off"
+        autocapitalize="off"
+        aria-describedby="color-status"
+      />
+      <input id="color-picker" class="hero-picker" type="color" value={start.solidHex} aria-label="Pick a color visually" />
+    </div>
+
+    {
+      result && (
+        <div class="hero-result">
+          <span class="hero-result-label">{result.label}</span>
+          <output for="color-input" data-out={result.key}>{start[result.key]}</output>
+          <button class="btn btn-ink" type="button" data-copy={result.key}>Copy</button>
+        </div>
+      )
+    }
+
+    <div id="color-status" class="status" aria-live="polite">
+      <span data-status="ok" hidden={start.color.mapped}>Read as <span data-detected>{start.color.kind}</span>. Every screen can show this color.</span>
+      <span data-status="mapped" hidden={!start.color.mapped}>
+        This color is outside sRGB. You are seeing the nearest color most screens can show.
+        <span data-wide-yes hidden={!start.color.wide}>On a wide-gamut screen the original is <code data-wide>{start.color.wide ?? ''}</code>.</span>
+        <span data-wide-no hidden={!start.color.mapped || !!start.color.wide}>It is outside Display P3 as well.</span>
+      </span>
+      <span data-status="bad" hidden>That is not a color yet. Still showing the last one that was.</span>
+      <span data-status="empty" hidden>Type a color, for example #3B82F6, rgb(59, 130, 246) or oklch(62% 0.19 260).</span>
+    </div>
+
+    <div class="chips">
+      {
+        presets.map((p) => (
+          <button class="chip" type="button" data-preset={p.value}>
+            <span class="chip-dot" aria-hidden="true" style={`background:${p.dot}`} />
+            {p.name}
+          </button>
+        ))
+      }
+      <button class="chip" type="button" data-copy="link">Copy link to this color</button>
+    </div>
+    <noscript><p>The converter needs JavaScript. The values on this page are for the example color.</p></noscript>
+    <span class="sr-only" aria-live="polite" data-announce></span>
+  </section>
+</div>
+
+<script>
+  import '../scripts/converter';
+</script>

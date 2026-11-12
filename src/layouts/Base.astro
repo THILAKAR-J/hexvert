@@ -1,0 +1,58 @@
+---
+import '@fontsource-variable/dm-sans/wght.css';
+import '@fontsource/dm-mono/400.css';
+import '@fontsource/dm-mono/500.css';
+import '../styles/global.css';
+import dmSansLatin from '@fontsource-variable/dm-sans/files/dm-sans-latin-wght-normal.woff2?url';
+import Footer from '../components/Footer.astro';
+import { SITE } from '../data/site';
+
+interface Props {
+  title: string;
+  description: string;
+  /** Site-relative path without a trailing slash, e.g. "/" or "/hex-to-rgb" */
+  path: string;
+  jsonLd?: object[];
+  bodyStyle?: string;
+  noindex?: boolean;
+  ogImage?: string;
+}
+
+const { title, description, path, jsonLd = [], bodyStyle, noindex = false, ogImage = '/og/default.png' } = Astro.props;
+const canonical = SITE.url + (path === '/' ? '/' : path);
+const ogTitle = title.replace(/ - Hexvert$/, '');
+const ld = (o: object) => JSON.stringify(o).replace(/</g, '\\u003c');
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta name="robots" content={noindex ? 'noindex, follow' : 'index, follow, max-image-preview:large'} />
+    <meta name="theme-color" content="#FBFBFA" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="preload" href={dmSansLatin} as="font" type="font/woff2" crossorigin />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={SITE.name} />
+    <meta property="og:title" content={ogTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={SITE.url + ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    {jsonLd.map((item) => <script type="application/ld+json" set:html={ld(item)} />)}
+  </head>
+  <body style={bodyStyle}>
+    <a class="skip" href="#main">Skip to content</a>
+    <slot />
+    <Footer />
+  </body>
+</html>

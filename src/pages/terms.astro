@@ -1,0 +1,16 @@
+---
+import Plain from '../layouts/Plain.astro';
+import { SITE } from '../data/site';
+---
+
+<Plain title="Terms of Use - Hexvert" description="Hexvert is free to use for any purpose. The tools are provided as is; CMYK values are estimates and should be proofed before printing." path="/terms" h1="Terms of use">
+  <p class="soft">Last updated 12 November 2026.</p>
+  <h2 class="h3">Using Hexvert</h2>
+  <p class="muted">You may use Hexvert and the values it produces for any personal or commercial work, free of charge. Do not try to disrupt the site or overload it with automated requests.</p>
+  <h2 class="h3">No warranty</h2>
+  <p class="muted">We test the converter carefully, but it is provided as is, without any warranty. Check important values before you rely on them. CMYK values are estimates made without a print profile; always proof printed work.</p>
+  <h2 class="h3">Limitation of liability</h2>
+  <p class="muted">To the extent the law allows, we are not liable for any loss that results from using the site or its results.</p>
+  <h2 class="h3">Contact</h2>
+  <p class="muted"><a href={`mailto:${SITE.email}`}>{SITE.email}</a></p>
+</Plain>

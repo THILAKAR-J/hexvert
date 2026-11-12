@@ -1,0 +1,24 @@
+---
+import Base from './Base.astro';
+import Header from '../components/Header.astro';
+import { SITE } from '../data/site';
+interface Props { title: string; description: string; path: string; h1: string; noindex?: boolean; breadcrumb?: boolean }
+const { title, description, path, h1, noindex = false, breadcrumb = true } = Astro.props;
+const jsonLd = breadcrumb
+  ? [{ '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Color converter', item: SITE.url + '/' },
+      { '@type': 'ListItem', position: 2, name: h1, item: SITE.url + path },
+    ] }]
+  : [];
+---
+
+<Base title={title} description={description} path={path} noindex={noindex} jsonLd={jsonLd}>
+  <div class="plain-header"><Header /></div>
+  <main id="main" class="wrap page-top">
+    <article class="prose">
+      {breadcrumb && <nav aria-label="Breadcrumb"><ol class="crumbs soft"><li><a href="/">Color converter</a> /</li><li aria-current="page">{h1}</li></ol></nav>}
+      <h1 class="h2">{h1}</h1>
+      <slot />
+    </article>
+  </main>
+</Base>

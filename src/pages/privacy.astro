@@ -1,0 +1,18 @@
+---
+import Plain from '../layouts/Plain.astro';
+import { SITE } from '../data/site';
+---
+
+<Plain title="Privacy Policy - Hexvert" description="Hexvert converts colors in your browser and does not upload what you type. No accounts, no advertising cookies. Here is exactly what is and is not collected." path="/privacy" h1="Privacy">
+  <p class="soft">Last updated 12 November 2026.</p>
+  <h2 class="h3">What you type stays in your browser</h2>
+  <p class="muted">Colors and files you paste are converted by code running on your own device. They are not sent to our servers or to anyone else.</p>
+  <h2 class="h3">What is stored on your device</h2>
+  <p class="muted">The home page saves the last color you used in your browser's local storage so it is there next time. It never leaves your device and you can clear it with your browser's site-data settings. We do not set cookies.</p>
+  <h2 class="h3">What our host sees</h2>
+  <p class="muted">The site is served by Cloudflare. Like any web host, Cloudflare processes technical request data such as IP address, browser type and the page requested in order to deliver the site and protect it from abuse. See <a href="https://www.cloudflare.com/privacypolicy/" rel="noopener">Cloudflare's privacy policy</a>.</p>
+  <h2 class="h3">Changes</h2>
+  <p class="muted">If we add analytics or advertising, this page will be updated before they go live and will say what they collect.</p>
+  <h2 class="h3">Contact</h2>
+  <p class="muted">Questions about privacy: <a href={`mailto:${SITE.email}`}>{SITE.email}</a>.</p>
+</Plain>

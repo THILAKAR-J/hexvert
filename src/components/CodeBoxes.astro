@@ -1,0 +1,21 @@
+---
+import { convert } from '../lib/color';
+import { cssSnippet, tailwindSnippet } from '../lib/snippets';
+interface Props { initial: string; heading?: string }
+const { initial, heading = 'Ready to paste into your code' } = Astro.props;
+const f = convert(initial)!;
+---
+
+<section class="section" aria-labelledby="code-heading">
+  <h2 id="code-heading" class="h2">{heading}</h2>
+  <div class="grid-2">
+    <div class="codebox">
+      <div class="codebox-top"><h3>CSS variables</h3><button class="btn btn-dark" type="button" data-copy="css" aria-label="Copy CSS variables">Copy</button></div>
+      <pre data-out="css">{cssSnippet(f)}</pre>
+    </div>
+    <div class="codebox">
+      <div class="codebox-top"><h3>Tailwind v4 theme</h3><button class="btn btn-dark" type="button" data-copy="tw" aria-label="Copy Tailwind v4 theme">Copy</button></div>
+      <pre data-out="tw">{tailwindSnippet(f)}</pre>
+    </div>
+  </div>
+</section>

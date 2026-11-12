@@ -1,0 +1,22 @@
+---
+import { convert } from '../lib/color';
+interface Props { initial: string }
+const f = convert(Astro.props.initial)!;
+---
+
+<section id="contrast" class="split">
+  <div class="split-text">
+    <h2 class="h2">Can people read text on it?</h2>
+    <p class="muted">The contrast ratio compares your color with white and with black. Body text needs 4.5:1 to meet WCAG AA; large text needs 3:1.</p>
+  </div>
+  <div class="split-body tiles">
+    <div class="tile">
+      <div class="tile-sample" aria-hidden="true" style="color:#FFFFFF">Aa</div>
+      <div class="tile-row"><span>White text</span><span class="tile-value"><span class="tile-ratio" data-out="onWhite">{f.onWhite}:1</span><span class="tile-grade" data-out="whiteGrade">{f.whiteGrade}</span></span></div>
+    </div>
+    <div class="tile">
+      <div class="tile-sample" aria-hidden="true" style="color:#0B0C0E">Aa</div>
+      <div class="tile-row"><span>Black text</span><span class="tile-value"><span class="tile-ratio" data-out="onBlack">{f.onBlack}:1</span><span class="tile-grade" data-out="blackGrade">{f.blackGrade}</span></span></div>
+    </div>
+  </div>
+</section>

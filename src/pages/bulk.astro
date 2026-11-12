@@ -1,0 +1,127 @@
+---
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import Conversions from '../components/Conversions.astro';
+import Faq from '../components/Faq.astro';
+import { convertText } from '../lib/bulk';
+import { SITE } from '../data/site';
+
+const title = 'Convert Every Color in a CSS File to OKLCH - Hexvert';
+const description =
+  'Paste a stylesheet, Tailwind config or token file and convert every color in place to OKLCH, HEX, RGB or HSL. See each change. Nothing is uploaded.';
+const sample = `:root {\n  --surface: #1E293B;\n  --accent: rgb(245, 158, 11);\n  --text: #F8FAFC;\n  --link: hsl(217, 91%, 60%);\n}\n\n#header {\n  border-bottom: 1px solid #3B82F680;\n}\n`;
+const first = convertText(sample, 'oklch');
+const faqs = [
+  { q: 'What does it change?', a: 'Only color values: HEX codes and `rgb()`, `hsl()`, `hwb()`, `oklch()`, `oklab()` and `color()` functions. Comments, selectors, spacing and everything else stay exactly as you pasted them.' },
+  { q: 'Will it break my ID selectors?', a: 'It should not. A HEX-looking word followed by `{`, a comma list of selectors, `:hover` or similar is treated as a selector and left alone. Check the list of changes before you copy, as with any automated edit.' },
+  { q: 'What about colors outside sRGB?', a: 'Converting to OKLCH never loses anything. Converting a very vivid OKLCH or Display P3 color to HEX, RGB or HSL maps it to the nearest displayable color, and the change list marks it.' },
+  { q: 'Is my file uploaded?', a: 'No. The conversion runs in your browser. Close the tab and the text is gone.' },
+];
+const jsonLd = [
+  { '@context': 'https://schema.org', '@type': 'WebApplication', name: 'Hexvert Bulk Color Converter', url: `${SITE.url}/bulk`, description, applicationCategory: 'DesignApplication', operatingSystem: 'Any', isAccessibleForFree: true, offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' } },
+  { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [ { '@type': 'ListItem', position: 1, name: 'Color converter', item: SITE.url + '/' }, { '@type': 'ListItem', position: 2, name: 'Bulk converter', item: `${SITE.url}/bulk` } ] },
+];
+---
+
+<Base title={title} description={description} path="/bulk" jsonLd={jsonLd} ogImage="/og/bulk.png">
+  <div class="plain-header"><Header /></div>
+  <main id="main" class="wrap stack page-top">
+    <section class="section" data-bulk>
+      <nav aria-label="Breadcrumb"><ol class="crumbs soft"><li><a href="/">Color converter</a> /</li><li aria-current="page">Bulk converter</li></ol></nav>
+      <h1 class="h2">Convert every color in a file</h1>
+      <p class="muted" style="max-width:720px">Paste CSS, SCSS, a Tailwind config or a design-token file. Every color changes to the format you pick, and the rest of the text stays exactly as it was.</p>
+      <div class="bulk-bar">
+        <label for="bulk-target" style="font-weight:600">Convert to</label>
+        <select id="bulk-target">
+          <option value="oklch" selected>OKLCH</option>
+          <option value="hex">HEX</option>
+          <option value="rgb">RGB</option>
+          <option value="hsl">HSL</option>
+        </select>
+        <button class="btn btn-dark" type="button" data-bulk-copy>Copy result</button>
+        <span class="bulk-status" aria-live="polite" data-bulk-status>{first.changes.length} colors converted.</span>
+      </div>
+      <div class="bulk-grid">
+        <div class="field">
+          <label for="bulk-in">Your file</label>
+          <textarea id="bulk-in" spellcheck="false" autocomplete="off">{sample}</textarea>
+        </div>
+        <div class="field">
+          <label for="bulk-out">Result</label>
+          <textarea id="bulk-out" readonly spellcheck="false">{first.output}</textarea>
+        </div>
+      </div>
+      <details>
+        <summary style="cursor:pointer;font-weight:600;min-height:44px;display:flex;align-items:center">See each change</summary>
+        <div class="table-scroll" style="margin-top:12px">
+          <table>
+            <thead><tr><th scope="col">Line</th><th scope="col">Before</th><th scope="col">After</th></tr></thead>
+            <tbody data-bulk-changes>
+              {first.changes.map((c) => <tr><td>{c.line}</td><td class="mono">{c.before}</td><td class="mono">{c.after}{c.mapped ? ' (mapped)' : ''}</td></tr>)}
+            </tbody>
+          </table>
+        </div>
+      </details>
+      <noscript><p>The bulk converter needs JavaScript. The result above is for the example file.</p></noscript>
+    </section>
+
+    <Faq items={faqs} />
+    <Conversions heading="Converting one color?" />
+  </main>
+</Base>
+
+<script>
+  import { convertText, type BulkTarget } from '../lib/bulk';
+
+  const input = document.querySelector<HTMLTextAreaElement>('#bulk-in')!;
+  const output = document.querySelector<HTMLTextAreaElement>('#bulk-out')!;
+  const select = document.querySelector<HTMLSelectElement>('#bulk-target')!;
+  const status = document.querySelector<HTMLElement>('[data-bulk-status]')!;
+  const tbody = document.querySelector<HTMLElement>('[data-bulk-changes]')!;
+  const copyButton = document.querySelector<HTMLButtonElement>('[data-bulk-copy]')!;
+  const MAX_ROWS = 300;
+  let timer = 0;
+
+  function run(): void {
+    const result = convertText(input.value, select.value as BulkTarget);
+    output.value = result.output;
+    const n = result.changes.length;
+    const mapped = result.changes.filter((c) => c.mapped).length;
+    let text = n === 0 ? 'No colors to convert.' : `${n} ${n === 1 ? 'color' : 'colors'} converted.`;
+    if (result.unchanged) text += ` ${result.unchanged} already in that format.`;
+    if (mapped) text += ` ${mapped} mapped into sRGB.`;
+    status.textContent = text;
+    tbody.replaceChildren(
+      ...result.changes.slice(0, MAX_ROWS).map((c) => {
+        const tr = document.createElement('tr');
+        const cells = [String(c.line), c.before, c.after + (c.mapped ? ' (mapped)' : '')];
+        cells.forEach((value, i) => {
+          const td = document.createElement('td');
+          if (i > 0) td.className = 'mono';
+          td.textContent = value;
+          tr.appendChild(td);
+        });
+        return tr;
+      }),
+    );
+  }
+
+  input.addEventListener('input', () => {
+    window.clearTimeout(timer);
+    timer = window.setTimeout(run, 120);
+  });
+  select.addEventListener('change', run);
+  copyButton.addEventListener('click', async () => {
+    let ok = false;
+    try {
+      await navigator.clipboard.writeText(output.value);
+      ok = true;
+    } catch {
+      output.select();
+      try { ok = document.execCommand('copy'); } catch { ok = false; }
+    }
+    copyButton.textContent = ok ? 'Copied' : 'Press Ctrl+C';
+    window.setTimeout(() => (copyButton.textContent = 'Copy result'), 1600);
+  });
+  run();
+</script>

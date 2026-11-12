@@ -1,0 +1,51 @@
+---
+import { FORMAT_ROWS } from '../data/formats';
+import { convert, shadeScale, type FormatKey } from '../lib/color';
+
+interface Props {
+  initial: string;
+  heading: string;
+  /** On conversion pages: put this format first and tint it */
+  target?: FormatKey;
+}
+
+const { initial, heading, target } = Astro.props;
+const start = convert(initial)!;
+const rows = target ? [...FORMAT_ROWS.filter((r) => r.key === target), ...FORMAT_ROWS.filter((r) => r.key !== target)] : FORMAT_ROWS;
+const shades = shadeScale(start);
+---
+
+<section id="formats" class="card" aria-label="All formats">
+  <div class="card-head">
+    <h2>{heading}</h2>
+    <span>One click copies any value</span>
+  </div>
+  <div class="formats">
+    {
+      rows.map((row) => (
+        <div class:list={['format', { 'is-target': row.key === target }]}>
+          <div class="format-top">
+            <span class="format-name">{row.label}</span>
+            <button class="btn" type="button" data-copy={row.key} aria-label={`Copy ${row.label} value`}>Copy</button>
+          </div>
+          <div class="format-value" data-out={row.key}>{start[row.key]}</div>
+          <div class="format-note">{row.note}</div>
+        </div>
+      ))
+    }
+  </div>
+  <div class="card-sub">
+    <h3>Lighter and darker</h3>
+    <span>Same hue, eleven steps. Select one to load it.</span>
+  </div>
+  <div class="shades">
+    {
+      shades.map((s, i) => (
+        <button class="shade" type="button" data-shade={i} aria-label={`Use shade ${s.step}, ${s.hex}`} style={`background:${s.hex};color:${s.ink}`}>
+          <span>{s.step}</span>
+          <span data-shade-hex>{s.hex}</span>
+        </button>
+      ))
+    }
+  </div>
+</section>

@@ -1,0 +1,14 @@
+{
+  "name": "Hexvert Color Converter",
+  "short_name": "Hexvert",
+  "description": "Convert colors between HEX, RGB, HSL, OKLCH, Display P3 and CMYK.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FBFBFA",
+  "theme_color": "#FBFBFA",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

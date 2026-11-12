@@ -1,0 +1,30 @@
+{
+  "name": "hexvert",
+  "type": "module",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Hexvert: a color converter for HEX, RGB, HSL, OKLCH, Display P3 and CMYK.",
+  "scripts": {
+    "dev": "astro dev",
+    "test": "vitest run",
+    "build": "vitest run && astro build && node scripts/check-dist.mjs",
+    "preview": "astro preview",
+    "og": "node scripts/generate-images.mjs",
+    "check": "astro check"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "@fontsource-variable/dm-sans": "^5.3.0",
+    "@fontsource/dm-mono": "^5.3.0",
+    "astro": "^7.4.10"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.12",
+    "@types/culori": "^4.0.1",
+    "culori": "^4.0.2",
+    "typescript": "^6.0.3",
+    "vitest": "^5.1.0"
+  }
+}
